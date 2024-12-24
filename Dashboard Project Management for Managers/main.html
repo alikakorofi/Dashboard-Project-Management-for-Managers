@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IT PROJECTS</title>
+    <!-- CSS Styles -->
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        /* Header Styles */
+        #header {
+            width: 100%;
+            height: 60px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+        #header h1 {
+            margin: 0;
+        }
+        #loginButton {
+            background-color: #16a085;
+            color: #ecf0f1;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        #loginButton:hover {
+            background-color: #1abc9c;
+        }
+        /* Sidebar Styles */
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            padding-top: 80px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+        .department {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .department:hover {
+            background-color: #2c3e50;
+        }
+        .department.active {
+            background-color: #16a085;
+        }
+        /* Content Styles */
+        #content {
+            margin-left: 250px;
+            padding: 80px 40px 40px 40px;
+            background-color: #ecf0f1;
+            min-height: 100vh;
+        }
+        #content h2 {
+            margin-top: 0;
+        }
+        .project-list {
+            list-style: none;
+            padding: 0;
+        }
+        .project-item {
+            background-color: #fff;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .project-name {
+            font-size: 18px;
+            font-weight: bold;
+            flex: 1;
+        }
+        .project-actions {
+            display: flex;
+            align-items: center;
+        }
+        .project-status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            color: #fff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status-pending {
+            background-color: #f39c12;
+        }
+        .status-progress {
+            background-color: #3498db;
+        }
+        .status-delay {
+            background-color: #e74c3c;
+        }
+        .status-finish {
+            background-color: #2ecc71;
+        }
+        /* Dropdown Styles */
+        .status-dropdown {
+            padding: 5px;
+            font-size: 14px;
+        }
+        /* Modal Styles */
+        #loginModal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        #loginModalContent {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 40px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 5px;
+        }
+        #loginModalContent h2 {
+            margin-top: 0;
+        }
+        #loginModalContent input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        #loginModalContent button {
+            width: 100%;
+            padding: 10px;
+            background-color: #16a085;
+            color: #ecf0f1;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #loginModalContent button:hover {
+            background-color: #1abc9c;
+        }
+        /* Add Project Styles */
+        #addProjectForm {
+            margin-bottom: 30px;
+        }
+        #addProjectForm input,
+        #addProjectForm select {
+            width: calc(100% - 120px);
+            padding: 10px;
+            margin-right: 10px;
+        }
+        #addProjectForm button {
+            padding: 10px;
+            background-color: #16a085;
+            color: #ecf0f1;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #addProjectForm button:hover {
+            background-color: #1abc9c;
+        }
+        /* File Input Styles */
+        #fileInput {
+            margin-top: 10px;
+        }
+        .pdf-link {
+            margin-top: 10px;
+        }
+        /* Finished Date Styles */
+        .finished-date {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        /* Chart Styles */
+        #projectChart {
+            margin-top: 20px;
+            max-width: 800px;
+            height: 400px;
+        }
+        /* Comments Section Styles */
+        .comments-section {
+            margin-top: 15px;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .comments-section h4 {
+            margin-top: 0;
+        }
+        .comments-list {
+            list-style: none;
+            padding: 0;
+        }
+        .comments-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        .comment-form {
+            display: flex;
+            margin-top: 10px;
+        }
+        .comment-form input {
+            flex: 1;
+            padding: 5px;
+        }
+        .comment-form button {
+            padding: 5px 10px;
+            background-color: #16a085;
+            color: #ecf0f1;
+            border: none;
+            cursor: pointer;
+        }
+        .comment-form button:hover {
+            background-color: #1abc9c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div id="header">
+        <h1>IT PROJECTS</h1>
+        <button id="loginButton">LOGIN</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal">
+        <div id="loginModalContent">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button id="submitLogin">Login</button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="department" data-dept="IT DIRECTOR">IT DIRECTOR</div>
+            <div class="department" data-dept="Admin">Admin</div>
+            <div class="department" data-dept="Network">Network</div>
+            <div class="department" data-dept="Database">Database</div>
+            <div class="department" data-dept="Development">Development</div>
+            <div class="department" data-dept="Integration">Integration</div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="content">
+            <h2>Select a Department</h2>
+            <!-- Add Project Form (visible only to logged-in users) -->
+            <div id="addProjectForm" style="display: none;">
+                <input type="text" id="newProjectName" placeholder="New Project Name">
+                <input type="file" id="fileInput" accept=".pdf">
+                <button id="addProjectButton">Add Project</button>
+            </div>
+            <!-- Canvas for the Chart -->
+            <canvas id="projectChart" style="display: none; max-width: 100%;"></canvas>
+            <ul class="project-list" id="projectList"></ul>
+        </div>
+    </div>
+
+    <!-- JavaScript Code -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Users Data
+        const users = {
+            "admin": { department: "Admin", password: "adminpassword" },
+            "it director": { department: "IT DIRECTOR", password: "password1" },
+            "network director": { department: "Network", password: "password2" },
+            "database director": { department: "Database", password: "password3" },
+            "development": { department: "Development", password: "password4" },
+            "integration": { department: "Integration", password: "password5" }
+        };
+
+        // Retrieve data from localStorage or initialize
+        let data = JSON.parse(localStorage.getItem('projectData')) || {
+            "IT DIRECTOR": [],
+            "Network": [],
+            "Database": [],
+            "Development": [],
+            "Integration": []
+        };
+
+        let loggedInUser = null;
+        let currentDepartment = null;
+        let projectChartInstance = null;
+
+        // IndexedDB Setup
+        let db;
+        const request = indexedDB.open('projectFilesDB', 1);
+
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            db.createObjectStore('files', { keyPath: 'id' });
+        };
+
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            // Initial Display
+            if (currentDepartment) {
+                displayProjects(currentDepartment);
+            } else {
+                contentTitle.textContent = 'Select a Department';
+                projectList.innerHTML = '';
+            }
+        };
+
+        request.onerror = function(event) {
+            console.error('IndexedDB error:', event.target.errorCode);
+        };
+
+        // DOM Elements
+        const loginButton = document.getElementById('loginButton');
+        const loginModal = document.getElementById('loginModal');
+        const submitLogin = document.getElementById('submitLogin');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const departments = document.querySelectorAll('.department');
+        const contentTitle = document.querySelector('#content h2');
+        const projectList = document.getElementById('projectList');
+        const addProjectForm = document.getElementById('addProjectForm');
+        const newProjectName = document.getElementById('newProjectName');
+        const addProjectButton = document.getElementById('addProjectButton');
+        const fileInput = document.getElementById('fileInput');
+
+        // Show Login Modal
+        loginButton.addEventListener('click', () => {
+            if (!loggedInUser) {
+                loginModal.style.display = 'block';
+            } else {
+                // Handle Logout
+                loggedInUser = null;
+                loginButton.textContent = 'LOGIN';
+                addProjectForm.style.display = 'none';
+                document.getElementById('projectChart').style.display = 'none';
+                projectList.style.display = 'block';
+                alert('Logged out.');
+                contentTitle.textContent = 'Select a Department';
+                projectList.innerHTML = '';
+            }
+        });
+
+        // Handle Login
+        submitLogin.addEventListener('click', () => {
+            const username = usernameInput.value.trim().toLowerCase();
+            const password = passwordInput.value.trim();
+            if (users[username] && users[username].password === password) {
+                loggedInUser = users[username].department;
+                loginModal.style.display = 'none';
+                loginButton.textContent = 'LOGOUT';
+                usernameInput.value = '';
+                passwordInput.value = '';
+                alert('Logged in as ' + loggedInUser);
+
+                if (loggedInUser === 'IT DIRECTOR') {
+                    // Display the chart
+                    addProjectForm.style.display = 'none';
+                    displayChart();
+                } else if (loggedInUser === 'Admin') {
+                    // Admin can view all projects
+                    addProjectForm.style.display = 'none';
+                    displayAllProjects();
+                } else if (currentDepartment === loggedInUser) {
+                    addProjectForm.style.display = 'block';
+                    displayProjects(currentDepartment);
+                } else {
+                    addProjectForm.style.display = 'none';
+                    displayProjects(currentDepartment);
+                }
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+
+        // Close Login Modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target == loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+
+        // Event Listeners for Departments
+        departments.forEach(dept => {
+            dept.addEventListener('click', function() {
+                // Remove active class from all departments
+                departments.forEach(d => d.classList.remove('active'));
+                // Add active class to the selected department
+                this.classList.add('active');
+                // Display department projects
+                currentDepartment = this.dataset.dept;
+
+                if (loggedInUser === 'IT DIRECTOR') {
+                    // Hide the chart and display the project list
+                    document.getElementById('projectChart').style.display = 'none';
+                    projectList.style.display = 'block';
+                    displayProjects(currentDepartment);
+                    addProjectForm.style.display = 'none';
+                } else if (loggedInUser === 'Admin') {
+                    // Admin can view all projects
+                    displayAllProjects();
+                    addProjectForm.style.display = 'none';
+                } else {
+                    displayProjects(currentDepartment);
+                    // Show add project form if the logged-in user matches the department
+                    if (loggedInUser === currentDepartment) {
+                        addProjectForm.style.display = 'block';
+                    } else {
+                        addProjectForm.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Function to Render the Chart
+        function renderChart() {
+            const ctx = document.getElementById('projectChart').getContext('2d');
+            const departmentNames = Object.keys(data);
+            const statusLabels = ['Pending', 'In Progress', 'Delayed', 'Finished'];
+            const statusColors = {
+                'Pending': '#f39c12',
+                'In Progress': '#3498db',
+                'Delayed': '#e74c3c',
+                'Finished': '#2ecc71'
+            };
+
+            const datasets = statusLabels.map(status => {
+                return {
+                    label: status,
+                    data: [],
+                    backgroundColor: statusColors[status]
+                };
+            });
+
+            departmentNames.forEach(dept => {
+                const deptProjects = data[dept];
+                statusLabels.forEach((status, index) => {
+                    const count = deptProjects.filter(project => project.status.toLowerCase() === status.toLowerCase()).length;
+                    datasets[index].data.push(count);
+                });
+            });
+
+            // Destroy existing chart instance if it exists
+            if (projectChartInstance) {
+                projectChartInstance.destroy();
+            }
+
+            projectChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: departmentNames,
+                    datasets: datasets
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Projects'
+                            },
+                            ticks: {
+                                precision: 0
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Departments'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Projects by Department and Status'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to Display Chart
+        function displayChart() {
+            // Show the chart canvas and hide the project list
+            document.getElementById('projectChart').style.display = 'block';
+            projectList.style.display = 'none';
+            contentTitle.textContent = 'All Department Projects';
+
+            // Render the chart
+            renderChart();
+        }
+
+        // Function to Display All Projects for Admin
+        function displayAllProjects() {
+            // Hide the chart and project list
+            document.getElementById('projectChart').style.display = 'none';
+            projectList.style.display = 'block';
+            contentTitle.textContent = 'All Department Projects';
+
+            // Clear existing projects
+            projectList.innerHTML = '';
+
+            // Loop through each department and display projects
+            for (let department in data) {
+                const deptProjects = data[department];
+                deptProjects.forEach((project, index) => {
+                    displayProjectItem(project, department);
+                });
+            }
+        }
+
+        // Function to Display Projects
+        function displayProjects(department) {
+            if (!db) {
+                // Wait for IndexedDB to be initialized
+                setTimeout(() => displayProjects(department), 100);
+                return;
+            }
+
+            // Update Content Title
+            contentTitle.textContent = department + ' Department Projects';
+
+            // Clear existing projects
+            projectList.innerHTML = '';
+
+            // Get Projects for the selected department
+            const projects = data[department];
+
+            // Loop through projects and create list items
+            projects.forEach((project, index) => {
+                displayProjectItem(project, department);
+            });
+        }
+
+        // Function to Display a Single Project Item
+        function displayProjectItem(project, department) {
+            const li = document.createElement('li');
+            li.classList.add('project-item');
+
+            const headerDiv = document.createElement('div');
+            headerDiv.classList.add('project-header');
+
+            const nameDiv = document.createElement('div');
+            nameDiv.classList.add('project-name');
+            nameDiv.textContent = project.name + ' (' + department + ')';
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.classList.add('project-actions');
+
+            const statusDiv = document.createElement('div');
+            statusDiv.classList.add('project-status');
+
+            // Update status display
+            updateStatusDisplay(project, statusDiv);
+
+            actionsDiv.appendChild(statusDiv);
+
+            // If user is logged in and matches department, or if IT Director or Admin is logged in
+            if (loggedInUser === department || loggedInUser === 'IT DIRECTOR' || loggedInUser === 'Admin') {
+                const statusDropdown = document.createElement('select');
+                statusDropdown.classList.add('status-dropdown');
+                const statuses = ['Pending', 'In Progress', 'Delayed', 'Finished'];
+
+                statuses.forEach(status => {
+                    const option = document.createElement('option');
+                    option.value = status;
+                    option.textContent = status;
+                    if (status === project.status) {
+                        option.selected = true;
+                    }
+                    statusDropdown.appendChild(option);
+                });
+
+                statusDropdown.addEventListener('change', () => {
+                    project.status = statusDropdown.value;
+                    updateStatusDisplay(project, statusDiv);
+                    saveData();
+                    // Re-display projects to show the finished date
+                    if (loggedInUser === 'Admin') {
+                        displayAllProjects();
+                    } else {
+                        displayProjects(currentDepartment);
+                    }
+                });
+
+                actionsDiv.appendChild(statusDropdown);
+            }
+
+            headerDiv.appendChild(nameDiv);
+            headerDiv.appendChild(actionsDiv);
+            li.appendChild(headerDiv);
+
+            // Display Finished Date if project is finished
+            if (project.status.toLowerCase() === 'finished' && project.finishedDate) {
+                const finishedDateDiv = document.createElement('div');
+                finishedDateDiv.classList.add('finished-date');
+                finishedDateDiv.textContent = 'Finished on: ' + project.finishedDate;
+                li.appendChild(finishedDateDiv);
+            }
+
+            // Display PDF link if available
+            if (project.fileId) {
+                const transaction = db.transaction(['files'], 'readonly');
+                const objectStore = transaction.objectStore('files');
+                const request = objectStore.get(project.fileId);
+
+                request.onsuccess = function(event) {
+                    const fileRecord = event.target.result;
+                    if (fileRecord) {
+                        const pdfBlob = fileRecord.file;
+                        const pdfURL = URL.createObjectURL(pdfBlob);
+
+                        const pdfLink = document.createElement('a');
+                        pdfLink.href = pdfURL;
+                        pdfLink.textContent = 'View PDF';
+                        pdfLink.target = '_blank';
+                        pdfLink.classList.add('pdf-link');
+                        li.appendChild(pdfLink);
+                    }
+                };
+            }
+
+            // Comments Section visible to all users
+            // Only Admin can add comments
+            // Display existing comments
+            const commentsDiv = document.createElement('div');
+            commentsDiv.classList.add('comments-section');
+
+            const commentsTitle = document.createElement('h4');
+            commentsTitle.textContent = 'Comments';
+            commentsDiv.appendChild(commentsTitle);
+
+            const commentsList = document.createElement('ul');
+            commentsList.classList.add('comments-list');
+
+            (project.comments || []).forEach(comment => {
+                const commentItem = document.createElement('li');
+                commentItem.textContent = comment;
+                commentsList.appendChild(commentItem);
+            });
+
+            commentsDiv.appendChild(commentsList);
+
+            // If Admin is logged in, show the comment form
+            if (loggedInUser === 'Admin') {
+                // Add comment form
+                const commentForm = document.createElement('div');
+                commentForm.classList.add('comment-form');
+
+                const commentInput = document.createElement('input');
+                commentInput.type = 'text';
+                commentInput.placeholder = 'Add a comment';
+                commentForm.appendChild(commentInput);
+
+                const commentButton = document.createElement('button');
+                commentButton.textContent = 'Submit';
+                commentForm.appendChild(commentButton);
+
+                commentButton.addEventListener('click', () => {
+                    const commentText = commentInput.value.trim();
+                    if (commentText) {
+                        if (!project.comments) {
+                            project.comments = [];
+                        }
+                        project.comments.push(commentText);
+                        saveData();
+                        // Clear input and refresh the comments list
+                        commentInput.value = '';
+                        displayAllProjects();
+                    } else {
+                        alert('Please enter a comment.');
+                    }
+                });
+
+                commentsDiv.appendChild(commentForm);
+            }
+
+            li.appendChild(commentsDiv);
+
+            // Append list item to project list
+            projectList.appendChild(li);
+        }
+
+        // Function to Update Status Display
+        function updateStatusDisplay(project, statusDiv) {
+            statusDiv.className = 'project-status';
+            const status = project.status;
+            switch (status.toLowerCase()) {
+                case 'pending':
+                    statusDiv.classList.add('status-pending');
+                    break;
+                case 'in progress':
+                    statusDiv.classList.add('status-progress');
+                    break;
+                case 'delayed':
+                    statusDiv.classList.add('status-delay');
+                    break;
+                case 'finished':
+                    statusDiv.classList.add('status-finish');
+                    // Record the date and time if not already set
+                    if (!project.finishedDate) {
+                        project.finishedDate = new Date().toLocaleString();
+                        saveData();
+                    }
+                    break;
+                default:
+                    statusDiv.textContent = status;
+            }
+            statusDiv.textContent = status;
+        }
+
+        // Function to Add New Project
+        addProjectButton.addEventListener('click', () => {
+            const projectName = newProjectName.value.trim();
+            const file = fileInput.files[0];
+
+            if (projectName) {
+                const newProject = { name: projectName, status: 'Pending', comments: [] };
+
+                if (file) {
+                    const transaction = db.transaction(['files'], 'readwrite');
+                    const objectStore = transaction.objectStore('files');
+                    const fileId = Date.now() + '_' + file.name;
+
+                    const fileRecord = { id: fileId, file: file };
+
+                    const request = objectStore.add(fileRecord);
+
+                    request.onsuccess = function() {
+                        newProject.fileId = fileId;
+                        data[currentDepartment].push(newProject);
+                        saveData();
+                        newProjectName.value = '';
+                        fileInput.value = '';
+                        displayProjects(currentDepartment);
+                    };
+
+                    request.onerror = function(event) {
+                        console.error('Error storing file:', event.target.errorCode);
+                        alert('Error uploading file.');
+                    };
+                } else {
+                    data[currentDepartment].push(newProject);
+                    saveData();
+                    newProjectName.value = '';
+                    fileInput.value = '';
+                    displayProjects(currentDepartment);
+                }
+            } else {
+                alert('Please enter a project name.');
+            }
+        });
+
+        // Function to Save Data to localStorage
+        function saveData() {
+            localStorage.setItem('projectData', JSON.stringify(data));
+            // Re-render the chart if IT Director is logged in
+            if (loggedInUser === 'IT DIRECTOR') {
+                renderChart();
+            }
+        }
+
+        // Initial Display
+        if (currentDepartment) {
+            displayProjects(currentDepartment);
+        } else {
+            contentTitle.textContent = 'Select a Department';
+            projectList.innerHTML = '';
+        }
+    </script>
+</body>
+</html>
